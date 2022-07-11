@@ -46,7 +46,7 @@ export default class ViewTask extends React.Component{
 
                     
                     
-                   <Row data={["Task","Status"]} textStyle={{color:'white',fontSize:25,textAlign:'center',fontFamily:this.state.Family}}></Row>
+                
                    
                 <Rows style={styles.singleHead} data={this.state.Rows_data} textStyle={{color:'white',fontSize:25,textAlign:'center',fontFamily:this.state.Family}}></Rows>
 

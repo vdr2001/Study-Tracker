@@ -35,25 +35,30 @@ export default class Study extends React.Component{
 
     
 
+/**========================================================================
+ * *                               subjectsSort()
+ * activated when the user clicks the tick next to the task
+ * Makes copy of tasklist array, which will be used to mark the task as complete
+ * The task will removed completely from the original tasklist array
+ *========================================================================**/
 
-
-    SubjectsSort=async()=>{
+    subjectsSort=async()=>{
 
 
 
      var array = await AsyncStorage.getItem('subjects');
         
-        if (array!=null){
-        var newArr=[]
+   if (array!=null){
+            var newArr=[]
         
-        var arr=JSON.parse(array)
+            var arr=JSON.parse(array)
         
         
         
      
 
-        var i=0
-        var j=true
+             var i=0
+             var j=true
 
         while (i>=0 && j==true ){
 
@@ -85,6 +90,9 @@ export default class Study extends React.Component{
 
 
     }
+
+
+    
     loadFonts=async()=>{
         await Font.loadAsync({
             Daniel:require('../../assets/fonts/Daniel.ttf'),
@@ -100,7 +108,7 @@ export default class Study extends React.Component{
 
     componentDidMount(){
       
-        this.SubjectsSort()
+        this.subjectsSort()
        
 
     }
@@ -111,9 +119,14 @@ export default class Study extends React.Component{
 
 
     render(){
-        if (this.state.fontsLoaded==false){
+        if (this.state.fontsLoaded==false){ //check if the fonts are loaded, if not then load them 
             this.loadFonts()
         }
+
+
+
+
+//check if there no subjects available to study, gives a message if there is not 
         if (this.state.Rows.length==0){
             this.state.message='Add subjects in the Subjects Page'
         }

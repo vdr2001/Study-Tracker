@@ -38,7 +38,7 @@ export default class AddFlash extends React.Component{
             }
         }
         Alert.alert("Flashcard added","Your flashcard has been added")
-       
+   
     }
 
     
@@ -96,11 +96,11 @@ export default class AddFlash extends React.Component{
                 <this.App></this.App>
                
                 <View style={styles.term}>
-                <TextInput style={{backgroundColor:'grey'}} placeholder="Enter term" onChangeText={(text)=>{this.setState({term:text})}} ></TextInput>
+                <TextInput style={{}} placeholder="Enter term" onChangeText={(text)=>{this.setState({term:text})}} ></TextInput>
                 </View>
 
                 <View style={styles.definition}>
-                <TextInput style={{backgroundColor:'grey'}} onChangeText={(text)=>{this.setState({definition:text})}}  placeholder="Enter definition/description"></TextInput>
+                <TextInput style={{}} onChangeText={(text)=>{this.setState({definition:text})}}  placeholder="Enter definition/description"></TextInput>
                 </View>
 
 

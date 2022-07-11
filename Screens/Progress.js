@@ -3,9 +3,8 @@ import React from "react";
 import {
     Text,
     View,
-    Picker
-    
-  } from 'react-native';
+    Picker,
+    Alert} from 'react-native';
  
   import { Dimensions } from "react-native";
 
@@ -13,12 +12,15 @@ import {
   import { BarChart, LineChart,PieChart } from "react-native-chart-kit";
 import { ScrollView } from "react-native-gesture-handler";
 
+import AwesomeButton from "react-native-really-awesome-button";
+
 
 export default class Progress extends React.Component{
     state={
         studyTimes:[],
         subjects:[],
         totals : [0],
+        timePeriods:[0,0,0,0],
         value:"None",
         itemsDrop: [
           {label: "7 Days", value: 'Seven'},
@@ -31,17 +33,25 @@ export default class Progress extends React.Component{
 
     }
 
-
+   
+/**========================================================================
+ * *                                loadData()
+ * Determines if the user is stopping or starting the timer
+ *   if Start it records the start time 
+ *   If stop it determines how long the study session was and gives user the option to save study session
+ *   
+ *
+ *========================================================================**/
   
-    Loaddata =()=>{
+    loaddata =(value)=>{
 
-      if (this.state.value=="Seven"){
+      if (value==7){
      
         this.sevenDays()
       
       }
 
-      if (this.state.value=="Fourteen"){
+      if (value==14){
         this.fourTeen()
     
       }
@@ -98,9 +108,61 @@ export default class Progress extends React.Component{
         this.calculateData()
     }
  
+    
+       /**========================================================================
+ * *                                calculateTimePeriods()
+ * Time Slots:
+ * 6 am to 11 am
+ * 12 pm to 7 pm 
+ * 7 pm to 12 am
+ * 12 am to 5 am 
+ *========================================================================**/
+   
+    calculateTimePeriods=async()=>{
+
+     var sixToEleven = 0
+     var twelveToSeven=0
+     var sevenToTwelve= 0 
+     var oneToFive=0
+      var studyTimes =JSON.parse(await AsyncStorage.getItem("studydata"))
+     
+      for (let i=0; i<studyTimes.length;i++){
+
+     
+
+        var hours=new Date( JSON.parse( studyTimes[i][1])).getHours()
+
+        //6 am to 11 am 
+        if (hours>=6 && hours<=11){
+          sixToEleven+=studyTimes[i][2]
+      
+        }
+        //12 pm to 7 pm 
+        if (hours>=12 && hours<=17){
+          twelveToSeven+=studyTimes[i][2]
+        }
+        //7 pm to 12 am 
+        if (hours>=17 && hours<=24){
+          sevenToTwelve+=studyTimes[i][2]
+
+        }
+
+        //1 am to 5 am 
+        if (hours>=1 && hours <=5){
+          oneToFive+=studyTimes[i][2]
+        }
+
+      }
+
+
+      this.setState({timePeriods:[sixToEleven,twelveToSeven,sevenToTwelve,oneToFive]})
+
+    }
+    
+    
     calculateData=()=>{
 
-  
+   
       var studyTimes2 = this.state.studyTimes;
       var subjects2= this.state.subjects;
       var totals =[];
@@ -117,24 +179,23 @@ export default class Progress extends React.Component{
 
               if (subjects2[i][0]==studyTimes2[j][0]){
                  
-                  sum=sum+studyTimes2[j][2];
+                  sum=sum+studyTimes2[j][2]; //Add the duration of the specific study session to the sum of the entire subject
                   
               }
           }
 
-          totals.push([sum]);
+          totals.push([sum]); //add the time for the subject into the array 
       
 
       }
      
-     
-
-    this.state.totals= totals
-      
-   this.setState({})
+    
+   this.setState({totals:totals})
   }
 
   loadFonts=async()=>{
+
+    this.calculateTimePeriods()
     await Font.loadAsync({
         Daniel:require('../assets/fonts/Daniel.ttf'),
         Pacifico:require('../assets/fonts/Pacifico-Regular.ttf'),
@@ -146,54 +207,47 @@ export default class Progress extends React.Component{
     
 }
 
+componentDidMount(){
+  this.calculateTimePeriods()
+}
+
+
+
+
     render(){
-
+    
       if (this.state.fontsLoaded==true){
-
-
-        this.Loaddata()
-        if (this.state.value=="Seven"){
-         this.state.title="Data for the last 7 days"
-         this.state.value="None"
-         this.sevenDays()
-         }
-
-      if (this.state.value=="Fourteen"){
-        this.state.title="Data for the last 14 days"
-        this.state.value="None"
-        this.fourTeen()
-      }
-     
+        
       
         return(
             <View style={{flex:4.8,paddingBottom:0}}>
+
+<AwesomeButton onPress={()=>{Alert.alert('Select TimeFrame',"Show data for:",[{text:"Last 7 days",onPress:()=>{this.loaddata(7)}},{text:"Last 14 Days",onPress:()=>{this.loaddata(14)}}])}} borderWidth={3} borderColor='#C39953' backgroundColor="#00CC99" style={  {  position:'relative',
+        top:'5%',
+        left:'40%',
+        marginBottom:40
+        }} > 
+                
+                <Text style={{color: "#fff",
+    fontSize:25,
+    fontFamily:'Teko'
+    }}>Select TimeFrame</Text>
+                
+                </AwesomeButton>
                
                <Text style={{fontFamily:this.state.fontHeader,fontSize:35,color:'#FF7F50',textAlign:'center'}}>{this.state.title}</Text>
-        <Picker 
-                
-                style={{fontSize:20,marginBottom:40}}
-                onValueChange={(itemvalue,itempos)=>{this.setState({value:itemvalue})
-                
-              }}
-                selectedValue={this.state.value}
-                
-               >
-                 <Picker.Item label="Select TimeFrame" value="None"></Picker.Item>
-                <Picker.Item label="Last 14 Days" value="Fourteen"></Picker.Item>
-                <Picker.Item label="Last 7 Days" value="Seven"></Picker.Item>
-
-                
-               </Picker>
+      
                
                 
 
       <ScrollView style={{}}>   
-      <Text style={{fontFamily:'Teko',fontSize:35,color:'#FF7F50',textAlign:'center'}}>Total study times(minutes)</Text>
+      <Text style={{fontFamily:this.state.fontHeader,fontSize:35,color:'#FF7F50',textAlign:'center'}}>Total study times(minutes)</Text>
                 <BarChart
   style={{
     marginVertical: 9,
     borderRadius: 2,
-    paddingLeft:2
+    paddingLeft:2,
+    marginBottom:30
   }}
   data={{
     labels: this.state.subjects,
@@ -265,41 +319,34 @@ export default class Progress extends React.Component{
     }}
   />
 
-<Text style={{fontFamily:'Teko',fontSize:35,color:'#FF7F50',textAlign:'center',marginTop:110}}>Frequent study times</Text>
+<Text style={{fontFamily:this.state.fontHeader,fontSize:35,color:'#FF7F50',textAlign:'center',marginTop:110}}>Frequent study times(Minutes)</Text>
 <PieChart
   data={ [
     {
-      name: "Seoul",
-      population: 68500000,
+      name: "6 am to 11 am",
+      population: this.state.timePeriods[0],
       color: "rgba(131, 167, 234, 1)",
       legendFontColor: "#7F7F7F",
       legendFontSize: 15
     },
     {
-      name: "Toronto",
-      population: 2800000,
+      name: "12 pm to 7 pm",
+      population: this.state.timePeriods[1],
       color: "#F00",
       legendFontColor: "#7F7F7F",
       legendFontSize: 15
     },
     {
-      name: "Beijing",
-      population: 527612,
+      name: "7 pm to 12 am",
+      population: this.state.timePeriods[2],
       color: "red",
       legendFontColor: "#7F7F7F",
       legendFontSize: 15
     },
     {
-      name: "New York",
-      population: 8538000,
+      name: "1 am to 5 am ",
+      population: this.state.timePeriods[2],
       color: "#ffffff",
-      legendFontColor: "#7F7F7F",
-      legendFontSize: 15
-    },
-    {
-      name: "Moscow",
-      population: 11920000,
-      color: "rgb(0, 0, 255)",
       legendFontColor: "#7F7F7F",
       legendFontSize: 15
     }

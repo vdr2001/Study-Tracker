@@ -8,10 +8,7 @@ import {
   StyleSheet,
   Text,
   View,
-
-  ScrollView,
- 
-  Button
+ ScrollView,Button
 } from 'react-native';
 import { useWindowDimensions } from "react-native";
 import RenderHTML from "react-native-render-html";
@@ -44,66 +41,25 @@ export default class Subject extends React.Component{
         pauseTime:0,
         totalPause:0,
         showPause:false,
-        headerFont:"normal",
-        source:{
-            
-            html: `<div class="wrapper" >
-            <div class="left_wall"
-            
-            ></div>
-            <div class="ball"></div>
-            <div class="left_wall " style="  float:right;
-            width:20px;
-            height:20px;
-            background:#61AE24;
-           
-
-            @-webkit-keyframes left-wall{
-                0% {margin-top:200px;}
-               
-                50%{margin-top:0px}
-                100%{margin-top:200px}
-                
-              };
-             
-              -webkit-animation:left-wall 3s infinite;
-
-
-
-              
-              
-              
-              "></div>
-            <div class="clear"></div>
-          </div>
-          `
-          
-         
-          }
+        headerFont:"normal"
         
     }
 
 
 
     
-    
-
-    constructor(props){
-
-        super(props)
-
-       
-
-        
-
-    }
 
    
-
-
+/**========================================================================
+ * *                                timeRecord()
+ * Determines if the user is stopping or starting the timer
+ *   if Start it records the start time 
+ *   If stop it determines how long the study session was and gives user the option to save study session
+ *   
+ *
+ *========================================================================**/
     timeRecord=()=>{
         var time = new Date()
-        var duration1=0
        
 
 
@@ -115,61 +71,63 @@ export default class Subject extends React.Component{
                 hour= hour-12
                 abrev="pm"
             }
-             this.setState({ButtonText:"Stop Timer"})
-             this.setState({startTime:time.getTime(),startfull:String(hour+':'+ String(time.getMinutes())+ ' '+abrev),showPause:true})
+
+            var minutes = time.getMinutes()
+
+            if (minutes<10){
+                minutes= '0'+time.getMinutes()
+            }
+           
+             this.setState({startTime:time.getTime(),ButtonText:"Stop Timer",startfull:String(hour+':'+ String(minutes)+ ' '+abrev),showPause:true})
              
              
             
         }
         else if (this.state.ButtonText=="Stop Timer"){
             
-            this.setState({ButtonText:"Start Timer",startfull:'  - '})
+            this.setState()
             duration1=time.getTime()-(this.state.startTime)
         
          
-            this.saveRecord(duration1);
-            
+            var seconds=duration1/1000
+      
+ 
+            var minutes= Math.floor(seconds/60)
+
+    
+            if (minutes>3){
+                Alert.alert('Save Session?','That was ' + String(minutes) + " minutes",[{text:'No'},{text:"Save Session",onPress:()=>{this.saveResult(minutes)}}])
+            }
+            else{
+                Alert.alert('Too Short','A session must be longer than 3 minutes',[{text:'Continue Session'},{text:"End Session",onPress:()=>{this.setState({showPause:false,pauseBtnText:'Pause',ButtonText:"Start Timer",startfull:'  - '})}}])
+                
+            }
             
         }
 
-
-
-       
 
 
     
-        
-        
-
     }
 
 
-    saveRecord=(dura)=>{
-        var seconds=dura/1000
-      
-        var pauseTime= this.state.pauseTime
-        
-        var minutes= Math.floor(seconds/60)-pauseTime
 
-        if (minutes>4){
-            Alert.alert('Save?','That was ' + String(minutes) + " minutes",[{text:'No'},{text:"Save",onPress:()=>{this.saveResult(minutes)}}])
-        }
-        else{
-            Alert.alert('Too Short','A session must be longer than 4 minutes',[{text:'Ok'}])
-            this.setState({showPause:false,pauseBtnText:'Pause'})
-        }
-    }
-
+    /**========================================================================
+ * *                                saveResult()
+ * Determines if the user is stopping or starting the timer
+ *   Get studydata array
+ * push the subject name, duration and the tasklist into the array
+ * save the array 
+ *========================================================================**/
+   
     //Date format : year-month-day
     saveResult=async(dura)=>{
-        var date= new Date()
+        var date= new Date() //get current date
       
   
 
-       
-
-
-        var array =JSON.parse(await AsyncStorage.getItem('studydata'));
+    
+        var array =JSON.parse(await AsyncStorage.getItem('studydata')); //get studydata array
 
         
 
@@ -178,7 +136,7 @@ export default class Subject extends React.Component{
         ///Get Subject name
         var name = String(this.state.name);
 
-        var result = name.substring(0,name.length-1)
+        var result = name.substring(0,name.length-1) //subject name
 
         
 
@@ -188,16 +146,23 @@ export default class Subject extends React.Component{
          AsyncStorage.setItem('studydata',JSON.stringify(array));
 
      
-         this.props.navigation.navigate('Study');
+         this.props.navigation.navigate('Study'); //Navigate back to study page
 
     }
     
     
+   
+
+
     addToCheckbox=()=>{
          this.state.checkbox.push(true);
 
         
     }
+
+
+
+
 
     changeCheckbox=(index)=>{
          Alert.alert(String(index))
@@ -212,14 +177,20 @@ export default class Subject extends React.Component{
     }
 
 
+
+
+ /**========================================================================
+ * *                                addTask()
+ * Pushes new task into the tasklist array and adds 'incomplete' status to it
+ *========================================================================**/
     addTask=()=>{
        
 
         var array = this.state.taskList;
 
-        array.push([this.state.taskText,'Incomplete'])
+        array.push([this.state.taskText,'Incomplete']) //push the task name and the status to array
 
-        this.setState({taskList:array,taskList2:array});
+        this.setState({taskList:array,taskList2:array}); 
 
      
         
@@ -227,14 +198,23 @@ export default class Subject extends React.Component{
         
     }
 
-    removeTask(index){
+ /**========================================================================
+ * *                               completeTask()
+ * activated when the user clicks the tick next to the task
+ * Makes copy of tasklist array, which will be used to mark the task as complete
+ * The task will removed completely from the original tasklist array
+ *========================================================================**/
+
+    completeTask(index){
         
         var array = this.state.taskList;
-        var array2= [...array]
+        var array2= [...array] //make copy of original tasklist
         
-        array2[index-1][1]="Complete"
+        array2[index-1][1]="Complete" //mark the task as complete for the secondary array 
 
        
+
+        //remove the task from original tasklist array 
         if (index==1){
             array.splice(index-1,1);
         }
@@ -248,19 +228,13 @@ export default class Subject extends React.Component{
         this.setState({taskList:array,taskList2:array2})
     }
 
+
+
+
+  /**========================================================================
+ * *                               loadFonts()
+ *========================================================================**/
   
-    element = (data, index) => {
-        var title ="✓"
-        return(
-          <View style={styles.btn1}>
-                <Button title={title}  onPress={() => {this.removeTask(index)
-                } }></Button>
-              
-            </View>
-        )
-       
-        }
-      
 
         loadFonts=async()=>{
             await Font.loadAsync({
@@ -302,6 +276,27 @@ export default class Subject extends React.Component{
             }
         }
 
+ /**========================================================================
+ * *                               Buttons
+ *========================================================================**/
+  
+
+
+        element = (data, index) => {
+            var title ="✓"
+            return(
+              <View style={styles.btn1}>
+                    <Button title={title}  onPress={() => {this.completeTask(index)
+                    } }></Button>
+                  
+                </View>
+            )
+           
+            }
+           
+
+
+
         pauseButton=()=>{
             if (this.state.showPause){
                 return(
@@ -320,9 +315,18 @@ export default class Subject extends React.Component{
             
         }
 
+
+
+
+
+
+
+
     render(){
 
-        if (this.state.fontsLoaded==false){
+
+
+        if (this.state.fontsLoaded==false){ //check if the fonts are loaded, if not then load them 
             this.loadFonts()
         }
 
@@ -338,13 +342,7 @@ export default class Subject extends React.Component{
 
         return(
         <View>
-            
-            <RenderHTML
-            source={this.state.source}
-            
-            >
-
-            </RenderHTML>
+           
             
             <Text style={{
         fontSize:60,
@@ -390,9 +388,9 @@ export default class Subject extends React.Component{
 
 
         <View style={{marginTop:60}}>
-            <Table borderStyle={{ borderWidth:3, borderColor:'#C39953'}}>
+            <Table borderStyle={{ borderWidth:0.7, borderColor:'#C39953'}}>
                     {this.state.taskArray.map((val,index)=>(
-                     <Row key={ index} data={[<TextInput key={val+''+index} multiline={true} placeholder="Enter Task here" onChangeText={text=>this.setState({taskText:text})}></TextInput>,[<View style={styles.btnTask}><Button style={styles.btnTask} onPress={this.addTask} title="Add" > </Button></View>]]} textStyle={{fontSize:22}}></Row>
+                     <Row key={ index} style={{marginTop:5}} data={[<TextInput key={3} multiline={true} placeholder="Enter Task here" onChangeText={text=>this.setState({taskText:text})}></TextInput>,[<View style={styles.btnTask}><Button style={styles.btnTask} onPress={this.addTask} title="Add" > </Button></View>]]} textStyle={{fontSize:22}}></Row>
                     )
                     )}
                    
@@ -411,7 +409,7 @@ export default class Subject extends React.Component{
                 
                     {tasks.map((val,index)=>
 
-                    <TableWrapper style={{flexDirection:'row'}} key={index}>
+                    <TableWrapper style={{flexDirection:'row',marginTop:8}} key={index}>
 
                         {val.map((val2,index2)=>
                         <Cell key={index2} style={styles.singleHead} data={index2===1 ? this.element(val2,index2):val2 }></Cell>
