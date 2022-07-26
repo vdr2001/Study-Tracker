@@ -50,6 +50,7 @@
     "react-native-modal-dropdown": "^1.0.2",
     "react-native-mp-android-chart": "^0.2.0",
     "react-native-paper": "^4.9.2",
+    "react-native-popup-dialog": "^0.18.3",
     "react-native-push-notification": "^7.4.0",
     "react-native-push-notifications": "^3.0.10",
     "react-native-really-awesome-button": "^1.6.0",
