@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react';
-import { TextInput } from 'react-native';
+import { Dimensions, TextInput } from 'react-native';
 import { Alert } from 'react-native';
 import {
   StyleSheet,
@@ -53,7 +53,8 @@ class Subjects extends React.Component{
         subjectAdd:'',
         message:[],
         fontsLoaded: false,
-        font:"normal"
+        font:"normal",
+        width:Dimensions.get('window').width
     }
 
 
@@ -386,8 +387,8 @@ for(let j=0 ;j<studydata.length;j++){
         const element = (data, index) => (
 
            
-              <View >
-                  <AwesomeButton height={50} width={90} backgroundColor={'#FF7F50'} onPress={()=>{this.RemoveAlert(index)}} ><Text>X</Text></AwesomeButton>
+              <View>
+                  <AwesomeButton height={50} width={0.25*(this.state.width)} backgroundColor={'#FF7F50'} onPress={()=>{this.RemoveAlert(index)}} style={{display:'flex'}}><Text>X</Text></AwesomeButton>
                 
               </View>
            
@@ -419,7 +420,7 @@ for(let j=0 ;j<studydata.length;j++){
 
 
                
-               
+            <View style={{alignItems:'center'}}>   
                 <AwesomeButton onPress={this.AddSubject} borderWidth={3} borderColor='#C39953' backgroundColor="#00CC99" style={styles.buttonContainer} > 
                 
                 <Text style={{color: "#fff",
@@ -429,7 +430,7 @@ for(let j=0 ;j<studydata.length;j++){
                 
                 </AwesomeButton>
                 
-           
+                </View>  
 
 
 
@@ -454,7 +455,7 @@ for(let j=0 ;j<studydata.length;j++){
                                 {
                                     val.map((cellData,cellIndex)=>
 
-                                        <Cell key={cellIndex} style={{width:'78%',backgroundColor:"#00CC99"}} data={cellIndex === 1? element(cellData, index) : cellData} textStyle={{textAlign:'center',color:'#FFF5EE',fontFamily:this.state.font,fontSize:25}}/>
+                                        <Cell key={cellIndex} style={{width:'75%',backgroundColor:"#00CC99"}} data={cellIndex === 1? element(cellData, index) : cellData} textStyle={{textAlign:'center',color:'#FFF5EE',fontFamily:this.state.font,fontSize:25}}/>
                                     
                                     
                                     
@@ -504,7 +505,7 @@ const styles=StyleSheet.create({
         borderWidth:3,
         borderColor:'#C39953',
         textAlign:'center',
-        marginBottom:20,
+        marginBottom:30,
         marginTop:30,
         height:40,
         color:'white'
@@ -514,9 +515,9 @@ const styles=StyleSheet.create({
     },
     buttonContainer:{
         position:'relative',
-        top:'5%',
-        left:'40%',
-        marginBottom:40
+        marginTop:30,
+        
+        marginBottom:30
         
     },
  

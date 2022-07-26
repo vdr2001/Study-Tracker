@@ -18,7 +18,7 @@ export default class FlashCards extends React.Component{
         state = {
         
           side:false,
-          value:"None",
+          value:"Select Subject",
           flashArray:[],
           itemsDrop:[],
           index:0,
@@ -69,10 +69,9 @@ export default class FlashCards extends React.Component{
                 arrayobject.push({label:subjects[i][0],value:subjects[i][0]})
             }
            
-            this.state.itemsDrop= arrayobject;
-         this.state.subjects=subjects
-
-         this.setState({loaded:1})
+           
+         
+          this.setState({loaded:1,subjects:subjects,itemsDrop:arrayobject})
         }
 
      
@@ -107,11 +106,9 @@ export default class FlashCards extends React.Component{
         this.state.flashArray=arraySect
         this.state.length= flashDisplay.length
         this.state.subName=this.state.value;
-        this.state.value="None"
-
+        this.state.value="Select Subject"
         this.state.indexofArray=index
-       this.setState({})
-    
+        this.setState({})
     }     
 
 
@@ -167,7 +164,7 @@ export default class FlashCards extends React.Component{
      
          <TouchableOpacity onPress={()=>{this.setState({side:!this.state.side})}}>      
             <Card  style={styles.Card}> 
-            <Card.Title style={{left:'40%',top:'25%'}} title={String(this.state.flashArray[this.state.index]).split(',')[0]}></Card.Title>
+            <Card.Title style={{left:'30%',top:'25%'}} title={String(this.state.flashArray[this.state.index]).split(',')[0]}></Card.Title>
          
         </Card>
         </TouchableOpacity> 
@@ -254,7 +251,7 @@ export default class FlashCards extends React.Component{
         if (this.state.loaded==0){
         this.setDropDown()
         }
-        if (this.state.value!=="None" ){
+        if (this.state.value!=="Select Subject" ){
             
             this.loadFlashCards()
             
@@ -270,7 +267,7 @@ export default class FlashCards extends React.Component{
         <View>
              <View style={styles.addButton}>
            
-          <AwesomeButton  onPress={()=>{this.props.navigation.navigate("AddFlash")}} borderWidth={3} borderColor='#C39953' backgroundColor={'#00CC99'} width={Dimensions.get('window').width}>
+          <AwesomeButton  onPress={()=>{this.props.navigation.navigate("AddFlash")}} borderWidth={3} borderColor='#C39953' backgroundColor={'#00CC99'} width={(Dimensions.get('window').width)/2}>
             
             
             
@@ -288,7 +285,7 @@ export default class FlashCards extends React.Component{
               selectedValue={this.state.value}
                 
                >
-                <Picker.Item label="None" value="None"/>
+                <Picker.Item label="Select Subject" value="Select Subject"/>
                 {this.state.subjects.map( (val,index)=>
                   <Picker.Item label={val[0]} value={val[0]} key={index}></Picker.Item>
                     
@@ -311,7 +308,7 @@ export default class FlashCards extends React.Component{
 const styles = StyleSheet.create({
     Card:{
         position:"relative",
-        top:130,
+        top:60,
         height:450,
         borderWidth:0,
         borderColor:'#C39953'
@@ -322,6 +319,9 @@ const styles = StyleSheet.create({
         top:50
     },
     addButton:{
-        bottom:10
+       
+        marginTop:10,
+        marginBottom:10,
+        alignItems:'center'
     }
 })

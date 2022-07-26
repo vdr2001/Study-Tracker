@@ -5,7 +5,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
 
 
-
+import { Dimensions } from 'react-native';
 
 
 
@@ -16,7 +16,9 @@ class Home extends React.Component{
 
     state={
         user:'',
-        Username:''
+        Username:'',
+        width:Dimensions.get('window').width,
+        height:Dimensions.get('window').height
     }
 
 j
@@ -59,10 +61,7 @@ j
     }
     
     
-//    resetStudy=()=>{
-//     AsyncStorage.setItem('studydata',JSON.stringify([]));
 
-//    }
     render(){
 
         this.setArray();
@@ -73,7 +72,7 @@ j
       
         
         return(
-            <View >
+            <View style={{alignItems:'center',justifyContent:'center',paddingTop:80,paddingBottom:80}}>
 
                 
 
@@ -82,8 +81,8 @@ j
             
                
                   
-
-              <AwesomeButton  height={70} width={150} backgroundColor="#00CC99" borderWidth={3} borderColor='#C39953' style={styles.buttonContainer} onPress={()=>this.props.navigation.navigate('Subjects',{user:this.state.user})}>
+           <View style={{display:'flex'}} >
+              <AwesomeButton  width={150} backgroundColor="#00CC99" borderWidth={3} borderColor='#C39953' onPress={()=>this.props.navigation.navigate('Subjects',{user:this.state.user})}>
                 
               
               <Text style={styles.text}>Subjects</Text>
@@ -93,16 +92,25 @@ j
             
             
                </AwesomeButton> 
+               </View>
 
-               <AwesomeButton height={70} width={150} backgroundColor="#00CC99" borderWidth={3} borderColor='#C39953' style={styles.buttonContainer} onPress={()=>{this.props.navigation.navigate('Progress')}}>
+
+               <View style={{display:'flex',paddingTop:30}} >
+
+               <AwesomeButton width={150} backgroundColor="#00CC99" borderWidth={3} borderColor='#C39953' onPress={()=>{this.props.navigation.navigate('Progress')}}>
 
              
                 <Text style={styles.text}>View Progress</Text>
                 
 
                 </AwesomeButton> 
+              
+                </View>
 
-                <AwesomeButton height={70} width={150} backgroundColor="#00CC99" borderWidth={3} borderColor='#C39953' style={styles.buttoncontainer2} onPress={()=>{this.props.navigation.navigate('Study',{user:this.state.user})}}>
+
+
+                <View style={{display:'flex',paddingTop:30}} >
+                <AwesomeButton  width={150} backgroundColor="#00CC99" borderWidth={3} borderColor='#C39953'  onPress={()=>{this.props.navigation.navigate('Study',{user:this.state.user})}}>
 
 
               
@@ -110,13 +118,14 @@ j
 
 
                 </AwesomeButton> 
+                </View>
+
+           
+               
 
 
-        
-
-
-
-                <AwesomeButton height={70} width={150} backgroundColor="#00CC99" borderWidth={3} borderColor='#C39953' style={styles.buttoncontainer2} onPress={()=>{this.props.navigation.navigate('FlashCards')}} >
+                <View style={{display:'flex',paddingTop:30}} >
+                <AwesomeButton width={150} backgroundColor="#00CC99" borderWidth={3} borderColor='#C39953'  onPress={()=>{this.props.navigation.navigate('FlashCards')}} >
 
               
                      <Text style={styles.text}>Flash cards</Text>
@@ -124,8 +133,11 @@ j
 
                 </AwesomeButton> 
 
+                </View>
 
-                <AwesomeButton height={70} width={150} backgroundColor="#00CC99" borderWidth={3} borderColor='#C39953' style={styles.buttoncontainer2} onPress={()=>{this.props.navigation.navigate("Previousses")}} >
+
+                <View style={{display:'flex',paddingTop:30}} >
+                <AwesomeButton  width={150} backgroundColor="#00CC99" borderWidth={3} borderColor='#C39953'  onPress={()=>{this.props.navigation.navigate("Previousses")}} >
 
               
                      <Text style={styles.text}>View Previous Sessions</Text>
@@ -133,17 +145,16 @@ j
 
                 </AwesomeButton> 
                 
+                </View>
 
-
-
+                </View>
 
 
 
 
               
                
-                  
-            </View>
+       
 
 
 
@@ -158,9 +169,8 @@ j
 
 const styles= StyleSheet.create({
    buttonContainer:{
-       position:'relative',
-       top:180,
-       left:20,
+        top:80,
+        left:15,
        marginBottom:70
        
    },
@@ -169,11 +179,13 @@ const styles= StyleSheet.create({
     
     bottom:100,
     left:220,
+    right:20,
     marginBottom:70
     
    },
    text:{
-    color: "#fff"
+    color: "#fff",
+    textAlign:'center'
     
    }
 

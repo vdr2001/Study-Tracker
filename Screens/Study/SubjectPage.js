@@ -10,8 +10,7 @@ import {
   View,
  ScrollView,Button
 } from 'react-native';
-import { useWindowDimensions } from "react-native";
-import RenderHTML from "react-native-render-html";
+import { Dimensions } from "react-native";
 
 import { TouchableOpacity } from "react-native";
 import * as Font from 'expo-font';
@@ -41,7 +40,8 @@ export default class Subject extends React.Component{
         pauseTime:0,
         totalPause:0,
         showPause:false,
-        headerFont:"normal"
+        headerFont:"normal",
+        width:Dimensions.get('window').width
         
     }
 
@@ -86,7 +86,7 @@ export default class Subject extends React.Component{
         else if (this.state.ButtonText=="Stop Timer"){
             
             this.setState()
-            duration1=time.getTime()-(this.state.startTime)
+          var  duration1=time.getTime()-(this.state.startTime)
         
          
             var seconds=duration1/1000
@@ -99,7 +99,7 @@ export default class Subject extends React.Component{
                 Alert.alert('Save Session?','That was ' + String(minutes) + " minutes",[{text:'No'},{text:"Save Session",onPress:()=>{this.saveResult(minutes)}}])
             }
             else{
-                Alert.alert('Too Short','A session must be longer than 3 minutes',[{text:'Continue Session'},{text:"End Session",onPress:()=>{this.setState({showPause:false,pauseBtnText:'Pause',ButtonText:"Start Timer",startfull:'  - '})}}])
+                Alert.alert('Too Short','A session must be longer than 3 minutes',[{text:'Continue Session'},{text:"End Session",onPress:()=>{this.setState({showPause:false,pauseBtnText:'Pause',ButtonText:"Start Timer",startfull:'  - ',taskList:[],taskList2:[]})}}])
                 
             }
             
@@ -347,7 +347,7 @@ export default class Subject extends React.Component{
             <Text style={{
         fontSize:60,
         left:'35%',
-        color:"#fb5b5a",fontFamily:this.state.headerFont}}>{this.state.name}</Text>
+        color:"#fb5b5a",fontFamily:'Teko'}}>{this.state.name}</Text>
 
 
            
@@ -372,7 +372,7 @@ export default class Subject extends React.Component{
 
             <View>
             <TouchableOpacity  onPress={this.timeRecord} style={styles.startButton}>
-                    <Text style={{color:'white',fontFamily:this.state.font,fontSize:22}} >{this.state.ButtonText}</Text>
+                    <Text style={{color:'white',fontFamily:this.state.font,fontSize:22,textAlign:'center'}} >{this.state.ButtonText}</Text>
 
                 </TouchableOpacity>
                 </View>
@@ -385,38 +385,28 @@ export default class Subject extends React.Component{
           
                 </View>
 
-
-
-        <View style={{marginTop:60}}>
-            <Table borderStyle={{ borderWidth:0.7, borderColor:'#C39953'}}>
-                    {this.state.taskArray.map((val,index)=>(
-                     <Row key={ index} style={{marginTop:5}} data={[<TextInput key={3} multiline={true} placeholder="Enter Task here" onChangeText={text=>this.setState({taskText:text})}></TextInput>,[<View style={styles.btnTask}><Button style={styles.btnTask} onPress={this.addTask} title="Add" > </Button></View>]]} textStyle={{fontSize:22}}></Row>
-                    )
-                    )}
-                   
+                <View style={{display:'flex',flexDirection:'row',marginTop:30}}>
                     
-                    
-                    
-                </Table>
+                <TextInput multiline={true} style={{width:0.75*(this.state.width)}} placeholder="Enter Task here" onChangeText={text=>this.setState({taskText:text})}></TextInput>
+                <View style={{ width:0.25*(this.state.width)}}><Button onPress={this.addTask} title="➕" > </Button></View>
                 </View>
 
                 
           
 
             
-                <Table borderStyle={{borderWidth:0,borderColor:'blue'}}>
-                    
+              
                 
                     {tasks.map((val,index)=>
 
-                    <TableWrapper style={{flexDirection:'row',marginTop:8}} key={index}>
-
-                        {val.map((val2,index2)=>
-                        <Cell key={index2} style={styles.singleHead} data={index2===1 ? this.element(val2,index2):val2 }></Cell>
-                        )}
-
-                    </TableWrapper>)}
-                </Table>
+                    <View key={index} style={styles.taskContainer}>
+                 <Text style={styles.task}>{val[0]}</Text>
+                <TouchableOpacity  onPress={() => props.deleteTask()} key={index}>
+                   <Text>🗑️</Text>
+                </TouchableOpacity>
+            </View>
+            
+            )}
                 
           
             </ScrollView>
@@ -434,6 +424,22 @@ export default class Subject extends React.Component{
 }
 
 const styles=StyleSheet.create({
+    task:{ color: '#fff',
+    width: '90%',
+    fontSize: 16},
+    taskContainer:{
+        backgroundColor:"#00CC99",
+        borderRadius: 12,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flex: 1,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        minHeight: 50,
+        marginTop:15
+    },
+
     SubjectName:{
         fontSize:29,
         position:'relative',
@@ -461,11 +467,7 @@ const styles=StyleSheet.create({
         top:190
     },
     singleHead: { width: '20%', height: 40, backgroundColor: '#c8e1ff' },
-    btnTask:{
-       flex:1,
-       width:200
-        },
-
+  
 
     timer:{
 

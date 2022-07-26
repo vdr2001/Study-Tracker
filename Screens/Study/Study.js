@@ -9,10 +9,9 @@ import AwesomeButton from "react-native-really-awesome-button";
 
 import * as Font from 'expo-font';
 
-
+import { Dimensions } from "react-native";
 export default class Study extends React.Component{
 
-    
    
 
     state={
@@ -20,7 +19,8 @@ export default class Study extends React.Component{
       
         message:"",
         fontsLoaded:false,
-        font:"normal"
+        font:"normal",
+        width:Dimensions.get('window').width
        
     }
 
@@ -139,7 +139,7 @@ export default class Study extends React.Component{
 
         const button=(index)=>(
             <View style={{}}>
-                <AwesomeButton height={50} width={90}  backgroundColor='#FF7F50' borderWidth={3} borderColor='#C39953'  onPress={()=>{this.onStudy(index)}}>
+                <AwesomeButton height={50} width={0.25*(this.state.width)}  backgroundColor='#FF7F50' borderWidth={3} borderColor='#C39953'  onPress={()=>{this.onStudy(index)}}>
 
 
               
@@ -168,7 +168,7 @@ export default class Study extends React.Component{
                             value.map((value2,index2)=>
                                 <Cell key={index2} data={index2==1?button(index):value2}  textStyle={index2==1?styles2.text:{textAlign:'center',color:'white',fontFamily:this.state.font,fontSize:25}} 
                                 
-                                style={{width:"77%",backgroundColor:"#00CC99"}}
+                                style={{width:"75%",backgroundColor:"#00CC99"}}
                                 > </Cell>
 
                             )

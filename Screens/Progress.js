@@ -148,7 +148,7 @@ export default class Progress extends React.Component{
         }
 
         //1 am to 5 am 
-        if (hours>=1 && hours <=5){
+        if (hours>=1 && hours<=5){
           oneToFive+=studyTimes[i][2]
         }
 
@@ -222,26 +222,33 @@ componentDidMount(){
         return(
             <View style={{flex:4.8,paddingBottom:0}}>
 
-<AwesomeButton onPress={()=>{Alert.alert('Select TimeFrame',"Show data for:",[{text:"Last 7 days",onPress:()=>{this.loaddata(7)}},{text:"Last 14 Days",onPress:()=>{this.loaddata(14)}}])}} borderWidth={3} borderColor='#C39953' backgroundColor="#00CC99" style={  {  position:'relative',
-        top:'5%',
-        left:'40%',
-        marginBottom:40
-        }} > 
+
+              <View style={{justifyContent:'center',marginTop:30,flexDirection:'row'}}>
+
+              <AwesomeButton onPress={()=>{this.loaddata(7)}} borderWidth={3} borderColor='#C39953' backgroundColor="#00CC99" style={{margin:20}} > 
                 
-                <Text style={{color: "#fff",
-    fontSize:25,
-    fontFamily:'Teko'
-    }}>Select TimeFrame</Text>
+                <Text style={{color: "#fff",fontSize:25,fontFamily:'Teko',textAlign:'center'}}>Data for Last 7 Days</Text>
                 
                 </AwesomeButton>
+
+
+                <AwesomeButton onPress={()=>{this.loaddata(14)}} borderWidth={3} borderColor='#C39953' backgroundColor="#00CC99" style={{margin:20}} > 
+                
+                <Text style={{color: "#fff",fontSize:25,fontFamily:'Teko',textAlign:'center'}}>Data for Last 14 Days</Text>
+                
+                </AwesomeButton>
+
+                </View>
+
+              
                
-               <Text style={{fontFamily:this.state.fontHeader,fontSize:35,color:'#FF7F50',textAlign:'center'}}>{this.state.title}</Text>
+               <Text style={{fontFamily:'Teko',fontSize:35,color:'#FF7F50',textAlign:'center'}}>{this.state.title}</Text>
       
                
                 
 
       <ScrollView style={{}}>   
-      <Text style={{fontFamily:this.state.fontHeader,fontSize:35,color:'#FF7F50',textAlign:'center'}}>Total study times(minutes)</Text>
+      <Text style={{fontFamily:'Teko',fontSize:35,color:'#FF7F50',textAlign:'center'}}>Total study times(minutes)</Text>
                 <BarChart
   style={{
     marginVertical: 9,
@@ -319,8 +326,9 @@ componentDidMount(){
     }}
   />
 
-<Text style={{fontFamily:this.state.fontHeader,fontSize:35,color:'#FF7F50',textAlign:'center',marginTop:110}}>Frequent study times(Minutes)</Text>
+<Text style={{fontFamily:'Teko',fontSize:35,color:'#FF7F50',textAlign:'center',marginTop:110}}>Frequent study times(Minutes)</Text>
 <PieChart
+
   data={ [
     {
       name: "6 am to 11 am",
@@ -339,20 +347,20 @@ componentDidMount(){
     {
       name: "7 pm to 12 am",
       population: this.state.timePeriods[2],
-      color: "red",
+      color: "yellow",
       legendFontColor: "#7F7F7F",
       legendFontSize: 15
     },
     {
       name: "1 am to 5 am ",
-      population: this.state.timePeriods[2],
+      population: this.state.timePeriods[3],
       color: "#ffffff",
       legendFontColor: "#7F7F7F",
       legendFontSize: 15
     }
   ]}
   width={Dimensions.get("window").width}
-  height={220}
+  height={260}
   chartConfig={{
     backgroundColor: "#e26a00",
     backgroundGradientFrom: "#fb8c00",
@@ -370,14 +378,15 @@ componentDidMount(){
     }}}
   accessor={"population"}
   backgroundColor={"transparent"}
-  paddingLeft={"12"}
   
-  center={[10, 50]}
+  paddingLeft={"12"}
+
+  
+  center={[10, 20]}
   
   absolute
 />
 
-<Text style={{position:'relative',top:90}}></Text>
 
 </ScrollView>     
 
