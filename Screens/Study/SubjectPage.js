@@ -18,7 +18,11 @@ import * as Font from 'expo-font';
 import { Table,Row,TableWrapper, Cell } from 'react-native-table-component';
 
 import { TextInput } from "react-native-gesture-handler";
+import { FlatList } from "react-native-gesture-handler";
 
+import DialogInput from "react-native-dialog-input";
+
+import AwesomeButton from "react-native-really-awesome-button";
 
 export default class Subject extends React.Component{
     
@@ -31,6 +35,7 @@ export default class Subject extends React.Component{
         startfull:'  -',
         taskList:[],
        taskList2:[],
+       inputDialog:false,
        taskText:'',
         checkbox:[],
         taskArray:["Enter Task "],
@@ -41,14 +46,33 @@ export default class Subject extends React.Component{
         totalPause:0,
         showPause:false,
         headerFont:"normal",
-        width:Dimensions.get('window').width
+        width:Dimensions.get('screen').width
         
     }
 
 
 
     
-
+    dialogView=()=>{
+        if (this.state.inputDialog==true){
+                return(
+        <DialogInput isDialogVisible={true}
+                    title={"DialogInput 1"}
+                    message={"Message for DialogInput #1"}
+                
+                    submitInput={ (inputText) => {
+                       
+                        
+                        this.AddSubject(inputText)} }
+                    closeDialog={ () => {this.setState({inputDialog:false})}}>
+        </DialogInput>
+                )
+            }
+            else{
+                return(<View></View>)
+            }
+        }
+        
    
 /**========================================================================
  * *                                timeRecord()
@@ -183,14 +207,14 @@ export default class Subject extends React.Component{
  * *                                addTask()
  * Pushes new task into the tasklist array and adds 'incomplete' status to it
  *========================================================================**/
-    addTask=()=>{
+    addTask=(newTask)=>{
        
 
         var array = this.state.taskList;
 
-        array.push([this.state.taskText,'Incomplete']) //push the task name and the status to array
+        array.push([newTask,'Incomplete']) //push the task name and the status to array
 
-        this.setState({taskList:array,taskList2:array}); 
+        this.setState({taskList:array,taskList2:array,inputDialog:false}); 
 
      
         
@@ -206,21 +230,28 @@ export default class Subject extends React.Component{
  *========================================================================**/
 
     completeTask(index){
-        
+     
         var array = this.state.taskList;
         var array2= [...array] //make copy of original tasklist
         
-        array2[index-1][1]="Complete" //mark the task as complete for the secondary array 
+       if ( array2[index][1]=="Complete"){
+        array2[index][1]="Incomplete"
+       }
+       else{
+        array2[index][1]="Complete"
+       }
+       
+       
+       //mark the task as complete for the secondary array 
 
        
 
         //remove the task from original tasklist array 
-        if (index==1){
-            array.splice(index-1,1);
-        }
-        else{
-            array.splice(index,1);
-        }
+     
+      
+       
+          
+       
   
         
 
@@ -300,12 +331,12 @@ export default class Subject extends React.Component{
         pauseButton=()=>{
             if (this.state.showPause){
                 return(
-                    <View style={{marginTop:30}}>
-  <TouchableOpacity onPress={this.pauseFunction} style={styles.startButton}>
+                    
+  <TouchableOpacity onPress={this.pauseFunction} style={styles.pauseButton}>
                     <Text style={{color:'white',fontFamily:this.state.font,fontSize:22}} >{this.state.pauseBtnText}</Text>
 
                 </TouchableOpacity>
-                    </View>
+                    
                 )
             }
 
@@ -316,6 +347,25 @@ export default class Subject extends React.Component{
         }
 
 
+        dialogView=()=>{
+            if (this.state.inputDialog==true){
+                    return(
+            <DialogInput isDialogVisible={true}
+                        title={"Enter a task"}
+                       
+                    
+                        submitInput={ (inputText) => {
+                           
+                            
+                            this.addTask(inputText)} }
+                        closeDialog={ () => {this.setState({inputDialog:false})}}>
+            </DialogInput>
+                    )
+                }
+                else{
+                    return(<View></View>)
+                }
+            }
 
 
 
@@ -341,12 +391,17 @@ export default class Subject extends React.Component{
          
 
         return(
-        <View>
+
+     <ScrollView>    
+        <View style={{alignItems:'center',flex:1}}>
+         
+            
+            <this.dialogView></this.dialogView>
            
             
             <Text style={{
         fontSize:60,
-        left:'35%',
+       
         color:"#fb5b5a",fontFamily:'Teko'}}>{this.state.name}</Text>
 
 
@@ -365,43 +420,51 @@ export default class Subject extends React.Component{
                
                 
             </View>
-            
-            <ScrollView style={styles.text}>
 
-
-
-            <View>
+            <View style={{}}>
             <TouchableOpacity  onPress={this.timeRecord} style={styles.startButton}>
                     <Text style={{color:'white',fontFamily:this.state.font,fontSize:22,textAlign:'center'}} >{this.state.ButtonText}</Text>
 
                 </TouchableOpacity>
-                </View>
+                
 
-
-                <View>
-
-            <this.pauseButton></this.pauseButton>
-            
-          
-                </View>
-
-                <View style={{display:'flex',flexDirection:'row',marginTop:30}}>
-                    
-                <TextInput multiline={true} style={{width:0.75*(this.state.width)}} placeholder="Enter Task here" onChangeText={text=>this.setState({taskText:text})}></TextInput>
-                <View style={{ width:0.25*(this.state.width)}}><Button onPress={this.addTask} title="➕" > </Button></View>
-                </View>
 
                 
-          
 
             
-              
+            
+          
+                
+                </View>
+                <this.pauseButton></this.pauseButton>
+
+
+                <Text style={{
+
+        fontSize:35,
+        marginTop:40,
+  
+        color:"#fb5b5a",fontFamily:'Teko'}}>Your Tasks</Text>
+
+
+
+<AwesomeButton onPress={()=>{this.setState({inputDialog:true})}} borderWidth={3} borderColor='#C39953' backgroundColor="#00CC99"  > 
+                
+                <Text style={{color: "#fff",
+    fontFamily:this.state.font,
+    fontSize:25
+    }}>Add Task</Text>
+                
+                </AwesomeButton>
+
+      
+           
                 
                     {tasks.map((val,index)=>
 
-                    <View key={index} style={styles.taskContainer}>
+                    <View key={index} style={val[1]=="Incomplete"?[styles.taskContainer,{backgroundColor:"#00CC99"}]:[styles.taskContainer,{backgroundColor:'#fd5c63'}]}>
                  <Text style={styles.task}>{val[0]}</Text>
-                <TouchableOpacity  onPress={() => props.deleteTask()} key={index}>
+                <TouchableOpacity  onPress={() => this.completeTask(index)} key={index}>
                    <Text>🗑️</Text>
                 </TouchableOpacity>
             </View>
@@ -409,13 +472,13 @@ export default class Subject extends React.Component{
             )}
                 
           
-            </ScrollView>
-
+            
            
 
             
            
         </View>
+        </ScrollView>   
         )
 
 
@@ -428,7 +491,7 @@ const styles=StyleSheet.create({
     width: '90%',
     fontSize: 16},
     taskContainer:{
-        backgroundColor:"#00CC99",
+       
         borderRadius: 12,
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -461,10 +524,9 @@ const styles=StyleSheet.create({
         color:"#fb5b5a"
       },
     text:{
-        position:'absolute',
+        position:'relative',
         height:330,
-        width:'100%',
-        top:190
+        width:'100%'
     },
     singleHead: { width: '20%', height: 40, backgroundColor: '#c8e1ff' },
   
@@ -475,7 +537,7 @@ const styles=StyleSheet.create({
         height:30,
         width:'100%',
         top:60,
-        marginTop:40
+        marginTop:20
 
     },
    
@@ -489,16 +551,30 @@ const styles=StyleSheet.create({
     startButton:{
         width:"20%",
         position:'relative',
-        left:'40%',
+    
         backgroundColor:"#00CC99",
         borderRadius:170,
         borderWidth:3,
         borderColor:'#C39953',
         height:80,
         alignItems:"center",
-        justifyContent:"center"
+        justifyContent:"center",
+        marginTop:90
         
         
+    },
+    pauseButton:{
+        width:"20%",
+        position:'relative',
+    
+        backgroundColor:"#00CC99",
+        borderRadius:170,
+        borderWidth:3,
+        borderColor:'#C39953',
+        height:80,
+        alignItems:"center",
+        justifyContent:"center",
+        marginTop:20
     }
 }
 )

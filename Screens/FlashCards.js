@@ -75,7 +75,13 @@ export default class FlashCards extends React.Component{
         }
 
      
-
+    /**========================================================================
+ * *                                Load Flashcards
+ *   fetches flashcards from async storage and loads it into the state
+ *   
+ *   
+ *
+ *========================================================================**/
    
     loadFlashCards = async()=>{
    
@@ -112,31 +118,51 @@ export default class FlashCards extends React.Component{
     }     
 
 
+
+    
+   /**========================================================================
+ * *                               Deleting card 
+ *   Gets the flashcards for the selected subject
+ * uses the current index to locate the flashcard the user wants to delete
+ *
+ *========================================================================**/
+
     deleteCard=async()=>{
       var flashcards = JSON.parse(await AsyncStorage.getItem("flashcards"))
 
-      var flashcard =flashcards[this.state.indexofArray][1];
+      var flashcard =flashcards[this.state.indexofArray][1]; //gets flashcard for selected subject
 
 
-      flashcard.splice(this.state.index,1)
+      flashcard.splice(this.state.index,1) //deletes the term/definition using the selected index
 
-    flashcards[this.state.indexofArray][1]=flashcard
+    flashcards[this.state.indexofArray][1]=flashcard //assigns the newly deleted/modified card to the index of the whole flashcards array 
 
     AsyncStorage.setItem('flashcards',JSON.stringify(flashcards)
     )
+
     this.state.value= flashcards[this.state.indexofArray][0]
     this.setState({})
     }
- 
+
+
+
+   /**========================================================================
+ * *                               card
+ *   Determines which side of the card to show by using a boolean variable
+ * initially it will be the definition side 
+ * true===show definition side false==show only the term 
+ *
+ *========================================================================**/
  
     card=()=>{
 
                
-        var variable=this.state.side;
+        var variable=this.state.side; //boolean variable used to indicate the side. 
 
    
-    if (this.state.flashArray.length>0 & this.state.value!=null){
-        if (variable==true){
+    if (this.state.flashArray.length>0 & this.state.value!=null){ //only shows flashcards if the flashcards array is not empty
+        
+      if (variable==true){ //show the definition side
             return(
          <View>      
         <TouchableOpacity onPress={()=>{this.setState({side:!this.state.side})}}>     
@@ -154,7 +180,7 @@ export default class FlashCards extends React.Component{
 
             )
         }
-        else{
+        else{ //show onlt the term side
             return(
 
               
@@ -174,7 +200,10 @@ export default class FlashCards extends React.Component{
             )
         }
     }
-    else{
+
+
+
+    else{ //if there are no flashcards for the subjects
         if(this.state.length==0){
            return( <View><Text style={{fontFamily:this.state.font,fontSize:29,textAlign:'center',color:'#FF7F50',top:70}}>(No Flashcards for this subject)</Text></View>)
         }
@@ -184,13 +213,23 @@ export default class FlashCards extends React.Component{
     }
     }
 
+
+
  
+   /**========================================================================
+ * *                                Swiping right (going to previous card)
+ *   decrements index and refreses the state to the load the previous flashcard
+ *   
+ *   
+ *
+ *========================================================================**/
 
     onSwipeRight(){
         var index1= this.state.index-1
-        this.state.currval=this.state.value
+
+        this.state.currval=this.state.value //
         
-        if (index1>=0){
+        if (index1>=0){ //Makes sure that the index doesn't go to negative 
       
             this.state.index= index1;
         }
@@ -198,6 +237,13 @@ export default class FlashCards extends React.Component{
        
        
     }
+       /**========================================================================
+ * *                                Swiping right (going to card in front )
+ *   Increments index and refreshes state to load card in front. 
+ *   
+ *   
+ *
+ *========================================================================**/
     
     onSwipeLeft(){
        

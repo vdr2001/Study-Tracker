@@ -1,37 +1,24 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React from 'react';
-import { Dimensions, TextInput } from 'react-native';
-import { Alert } from 'react-native';
-import {
-  StyleSheet,
- 
-  View,
- 
-  ScrollView,
-  Button
-} from 'react-native';
 
+import React from 'react';
+
+import { Dimensions, TextInput } from 'react-native';
+
+import { Alert } from 'react-native';
+
+import {StyleSheet,View,ScrollView} from 'react-native';
+
+import DialogInput from 'react-native-dialog-input';
 
 import { Text } from 'react-native-elements';
 
 import AwesomeButton from 'react-native-really-awesome-button';
 
-
 import * as Font from 'expo-font';
 
-import { Checkbox } from 'react-native-paper';
+import { Table,TableWrapper, Cell } from 'react-native-table-component';
 
-import { Table,Row,Rows,Col,Cols,TableWrapper, Cell } from 'react-native-table-component';
 
-function RetButton(){
-
-    return(
-        <div>
-            <button >Submit</button>
-        </div>
-    )
-
-}
 
 
 class Subjects extends React.Component{
@@ -50,11 +37,12 @@ class Subjects extends React.Component{
     state={
         Rows_data: [],
         visible:true,
-        subjectAdd:'',
+        
         message:[],
         fontsLoaded: false,
         font:"normal",
-        width:Dimensions.get('window').width
+        width:Dimensions.get('window').width,
+        inputDialog:false
     }
 
 
@@ -84,7 +72,7 @@ class Subjects extends React.Component{
 
     //********************************************************************* */
 
-
+ 
 
 
     /**========================================================================
@@ -94,8 +82,10 @@ class Subjects extends React.Component{
      
      *========================================================================**/
 
-    AddSubject=()=>{
-        this.setState({message:''}) //Removes add new subjects here message
+    AddSubject=(subjectAdd)=>{
+
+
+       //Removes add new subjects here message
 
 
         var Exists=false;
@@ -111,16 +101,16 @@ class Subjects extends React.Component{
             
             
 
-            if ((row.toUpperCase())==this.state.subjectAdd.toUpperCase()){
+            if ((row.toUpperCase())==subjectAdd.toUpperCase()){
                 Exists=true;
             }
 
         }
 
 //* Checking that its not empty and does not include comma's and speech marks  
-        if (this.state.subjectAdd.length==0||this.state.subjectAdd.includes('"')||Exists==true){
+        if (subjectAdd.length==0||subjectAdd.includes('"')||Exists==true){
 
-            if (this.state.subjectAdd.length==0){
+            if (subjectAdd.length==0){
                 Alert.alert(
                     "Empty Name",
                     "Subject Name cannot be Blank",
@@ -132,7 +122,7 @@ class Subjects extends React.Component{
               
             }
 
-            if (this.state.subjectAdd.includes('"')){
+            if (subjectAdd.includes('"')){
                 Alert.alert(
                     "Quotation Marks",
                     "Subject Name cannot have quotation Marks",
@@ -163,11 +153,11 @@ class Subjects extends React.Component{
 
         else{
             var newarr=this.state.Rows_data
-            newarr.push([this.state.subjectAdd,''])
+            newarr.push([subjectAdd,''])
            
             this.SaveData();
           
-            this.setState({Rows_data:newarr})
+            this.setState({Rows_data:newarr,message:'',inputDialog:false})
             
             
           
@@ -355,6 +345,26 @@ for(let j=0 ;j<studydata.length;j++){
     }
 
 
+    dialogView=()=>{
+if (this.state.inputDialog==true){
+        return(
+<DialogInput isDialogVisible={true}
+            title={"DialogInput 1"}
+            message={"Message for DialogInput #1"}
+        
+            submitInput={ (inputText) => {
+               
+                
+                this.AddSubject(inputText)} }
+            closeDialog={ () => {this.setState({inputDialog:false})}}>
+</DialogInput>
+        )
+    }
+    else{
+        return(<View></View>)
+    }
+}
+
 //Adding Subject to List
   
 
@@ -405,6 +415,9 @@ for(let j=0 ;j<studydata.length;j++){
             
             
             <View >
+            
+
+            <this.dialogView></this.dialogView>
 
                 <Table style={styles.messagetable}>
 
@@ -413,15 +426,12 @@ for(let j=0 ;j<studydata.length;j++){
                 </Table>
 
                
-                <TextInput style={styles.TextInput} placeholder="Enter new Subject Here" onChangeText={(text)=>{this.setState({subjectAdd:text})}}>
-
-                </TextInput>
-
+             
 
 
                
             <View style={{alignItems:'center'}}>   
-                <AwesomeButton onPress={this.AddSubject} borderWidth={3} borderColor='#C39953' backgroundColor="#00CC99" style={styles.buttonContainer} > 
+                <AwesomeButton onPress={()=>{this.setState({inputDialog:true})}} borderWidth={3} borderColor='#C39953' backgroundColor="#00CC99" style={styles.buttonContainer} > 
                 
                 <Text style={{color: "#fff",
     fontFamily:this.state.font,

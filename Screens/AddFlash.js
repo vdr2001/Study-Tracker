@@ -14,9 +14,17 @@ export default class AddFlash extends React.Component{
         value:""
     }
 
+
+    /**========================================================================
+ * *                                addFlash
+ *   Adds the entered flashcard into the flashcards array
+ *   
+ *   
+ *
+ *========================================================================**/
     Addflash=async()=>{
 
-        var array = JSON.parse(await AsyncStorage.getItem("flashcards"));
+        var array = JSON.parse(await AsyncStorage.getItem("flashcards")); //get flashcard from asyncStorage
 
     if (this.state.value==null){
         Alert.alert("No subject selected","No subject has been selected")
@@ -29,7 +37,8 @@ export default class AddFlash extends React.Component{
        
           
         for (let i =0 ;i<array.length;i++){
-            if (array[i][0]==this.state.value){
+
+            if (array[i][0]==this.state.value){ //If the array matches the selected subject name then push the data into the array 
                 var arr= array[i][1]
                 arr.push([[this.state.term,this.state.definition]]);
                 array[i][1]=arr;
@@ -37,7 +46,7 @@ export default class AddFlash extends React.Component{
                 AsyncStorage.setItem("flashcards",JSON.stringify(array));
             }
         }
-        Alert.alert("Flashcard added","Your flashcard has been added")
+        Alert.alert("Flashcard added","Your flashcard has been added");
    
     }
 
@@ -45,6 +54,14 @@ export default class AddFlash extends React.Component{
       
     }   
 
+
+/**========================================================================
+ * *                                setDropDown
+ *   Loads subjects into drop down list by fetching from async storage
+ *   
+ *   
+ *
+ *========================================================================**/
     setDropDown=async()=>{
 
         var subjects = JSON.parse(await AsyncStorage.getItem("subjects"));
@@ -52,7 +69,7 @@ export default class AddFlash extends React.Component{
 
         var arrayobject=[];
 
-        for (let i =0 ; i<subjects.length;i++){
+        for (let i =0 ; i<subjects.length;i++){    // Push subject name as both label and value into dropdown list. 
             arrayobject.push({label:subjects[i][0],value:subjects[i][0]})
         }
        
@@ -61,12 +78,18 @@ export default class AddFlash extends React.Component{
     }
 
     
-
+    /**========================================================================
+ * *                                Loaddropdownlist
+ *   Adds the entered flashcard into the flashcards array
+ *   
+ *   
+ *
+ *========================================================================**/
     App=()=> {
         const [open, setOpen] = useState(false);
         const [value, setValue] = useState(null);
 
-        this.state.value=value
+        this.state.value=value //sets value to the subject name 
       
   
         return (
