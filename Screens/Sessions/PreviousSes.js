@@ -1,8 +1,8 @@
 import React from "react";
 import { View,Text, Alert } from "react-native";
-import { Card, Paragraph, TextInput } from "react-native-paper";
-import { StyleSheet,Button,Picker } from "react-native";
-import { Table,Row,Rows,Col,Cols,TableWrapper, Cell } from 'react-native-table-component';
+
+
+import { Table,TableWrapper, Cell } from 'react-native-table-component';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Font from 'expo-font';
 

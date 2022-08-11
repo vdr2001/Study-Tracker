@@ -5,8 +5,6 @@ import { StyleSheet, Text, View } from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
 
 
-import { Dimensions } from 'react-native';
-
 
 
 
@@ -14,12 +12,6 @@ class Home extends React.Component{
 
     
 
-    state={
-        user:'',
-        Username:'',
-        width:Dimensions.get('window').width,
-        height:Dimensions.get('window').height
-    }
 
 j
 
@@ -82,7 +74,7 @@ j
                
                   
            <View style={{display:'flex'}} >
-              <AwesomeButton  width={150} backgroundColor="#00CC99" borderWidth={3} borderColor='#C39953' onPress={()=>this.props.navigation.navigate('Subjects',{user:this.state.user})}>
+              <AwesomeButton  width={150} backgroundColor="#00CC99" borderWidth={3} borderColor='#C39953' onPress={()=>this.props.navigation.navigate('Subjects')}>
                 
               
               <Text style={styles.text}>Subjects</Text>
@@ -110,11 +102,11 @@ j
 
 
                 <View style={{display:'flex',paddingTop:30}} >
-                <AwesomeButton  width={150} backgroundColor="#00CC99" borderWidth={3} borderColor='#C39953'  onPress={()=>{this.props.navigation.navigate('Study',{user:this.state.user})}}>
+                <AwesomeButton  width={150} backgroundColor="#00CC99" borderWidth={3} borderColor='#C39953'  onPress={()=>{this.props.navigation.navigate('Study')}}>
 
 
               
-                <Text style={styles.text} >Study Now</Text>
+                <Text style={styles.text} >Study/Flashcards</Text>
 
 
                 </AwesomeButton> 
@@ -124,16 +116,7 @@ j
                
 
 
-                <View style={{display:'flex',paddingTop:30}} >
-                <AwesomeButton width={150} backgroundColor="#00CC99" borderWidth={3} borderColor='#C39953'  onPress={()=>{this.props.navigation.navigate('FlashCards')}} >
-
-              
-                     <Text style={styles.text}>Flash cards</Text>
-
-
-                </AwesomeButton> 
-
-                </View>
+           
 
 
                 <View style={{display:'flex',paddingTop:30}} >

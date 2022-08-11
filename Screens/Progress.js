@@ -2,9 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import React from "react";
 import {
     Text,
-    View,
-    Picker,
-    Alert} from 'react-native';
+    View} from 'react-native';
  
   import { Dimensions } from "react-native";
 
@@ -22,11 +20,6 @@ export default class Progress extends React.Component{
         totals : [0],
         timePeriods:[0,0,0,0],
         value:"None",
-        itemsDrop: [
-          {label: "7 Days", value: 'Seven'},
-          {label: '14 Days ', value: 'Fourteen'}
-        ],
-        count:0,
         title:"",
         fontsLoaded:false,
         fontHeader:"normal"

@@ -349,9 +349,8 @@ for(let j=0 ;j<studydata.length;j++){
 if (this.state.inputDialog==true){
         return(
 <DialogInput isDialogVisible={true}
-            title={"DialogInput 1"}
-            message={"Message for DialogInput #1"}
-        
+            title={"Enter a name for your subject"}
+            
             submitInput={ (inputText) => {
                
                 

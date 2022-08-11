@@ -20,12 +20,10 @@ export default class FlashCards extends React.Component{
           side:false,
           value:"Select Subject",
           flashArray:[],
-          itemsDrop:[],
           index:0,
           length:null,
           currval:'',
           subjects:[],
-          loaded:0,
           subName:"",
           indexofArray:0,
           font:"normal",
@@ -35,44 +33,7 @@ export default class FlashCards extends React.Component{
        
 
         
-        App=()=> {
-            const [open, setOpen] = useState(false);
-            const [value, setValue] = useState(null);
-            const [items, setItems] = useState([
-              {label: 'Apple', value: 'apple'},
-              {label: 'Banana', value: 'banana'}
-            ]);
-            
-            
-           
-          this.state.value=value
-            return (
-              <DropDownPicker
-                open={open}
-                value={value}
-                items={this.state.itemsDrop}
-                setOpen={setOpen}
-                setValue={setValue}
-                setItems={setItems}
-              />
-            );
-          }
-    
-          setDropDown=async()=>{
-
-            var subjects = JSON.parse(await AsyncStorage.getItem("subjects"));
-    
-    
-            var arrayobject=[];
-    
-            for (let i =0 ; i<subjects.length;i++){
-                arrayobject.push({label:subjects[i][0],value:subjects[i][0]})
-            }
-           
-           
-         
-          this.setState({loaded:1,subjects:subjects,itemsDrop:arrayobject})
-        }
+       
 
      
     /**========================================================================
@@ -139,9 +100,9 @@ export default class FlashCards extends React.Component{
 
     AsyncStorage.setItem('flashcards',JSON.stringify(flashcards)
     )
-
-    this.state.value= flashcards[this.state.indexofArray][0]
-    this.setState({})
+    
+    this.setState({value:flashcards[this.state.indexofArray][0]})
+    this.loadFlashCards()
     }
 
 
@@ -150,7 +111,7 @@ export default class FlashCards extends React.Component{
  * *                               card
  *   Determines which side of the card to show by using a boolean variable
  * initially it will be the definition side 
- * true===show definition side false==show only the term 
+ * true-->show definition side false-->show only the term 
  *
  *========================================================================**/
  
@@ -286,22 +247,19 @@ export default class FlashCards extends React.Component{
     this.setState({ fontsLoaded: true,font:"Teko" });
 }
 
-
+  componentDidMount=()=>{
+    this.loadFlashCards()
+  }
 
     render(){
-
+      this.state.value = this.props.route.params.name;
+      this.state.value= this.props.route.params.name;
       if (this.state.fontsLoaded==false){
         this.loadFonts()
+      
       }
-
-        if (this.state.loaded==0){
-        this.setDropDown()
-        }
-        if (this.state.value!=="Select Subject" ){
-            
-            this.loadFlashCards()
-            
-        }
+     
+      
         const config = {
             velocityThreshold: 0.1,
             directionalOffsetThreshold: 610,
@@ -313,7 +271,7 @@ export default class FlashCards extends React.Component{
         <View>
              <View style={styles.addButton}>
            
-          <AwesomeButton  onPress={()=>{this.props.navigation.navigate("AddFlash")}} borderWidth={3} borderColor='#C39953' backgroundColor={'#00CC99'} width={(Dimensions.get('window').width)/2}>
+          <AwesomeButton  onPress={()=>{this.props.navigation.navigate("AddFlash",{value:this.state.value})}} borderWidth={3} borderColor='#C39953' backgroundColor={'#00CC99'} width={(Dimensions.get('window').width)/2}>
             
             
             
@@ -323,21 +281,7 @@ export default class FlashCards extends React.Component{
           </AwesomeButton>
              
               </View>
-              <Picker 
-               
-                onValueChange={(itemvalue,itempos)=>{this.setState({value:itemvalue})
-            
-              }}
-              selectedValue={this.state.value}
-                
-               >
-                <Picker.Item label="Select Subject" value="Select Subject"/>
-                {this.state.subjects.map( (val,index)=>
-                  <Picker.Item label={val[0]} value={val[0]} key={index}></Picker.Item>
-                    
-                )}
-                
-               </Picker>
+           
               <GestureRecognizer  config={config} onSwipe={(direction,state)=>{this.onSwipe(direction,state)}}>
               <Text style={{fontFamily:this.state.font,fontSize:29,textAlign:'center',top:20,color:'#FF7F50'}}>{this.state.subName}</Text>
               <this.card></this.card>

@@ -1,15 +1,16 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React from "react";
 
-import { StyleSheet, Text, View,Button,Alert} from 'react-native';
+import { StyleSheet, Text, View} from 'react-native';
 
-import { Table,Row,Rows,Col,Cols,TableWrapper, Cell } from 'react-native-table-component';
+import { Table,TableWrapper, Cell } from 'react-native-table-component';
 
 import AwesomeButton from "react-native-really-awesome-button";
 
 import * as Font from 'expo-font';
 
 import { Dimensions } from "react-native";
+
 export default class Study extends React.Component{
 
    
@@ -137,17 +138,24 @@ export default class Study extends React.Component{
       
 
 
-        const button=(index)=>(
-            <View style={{}}>
+        const button=(index,value2)=>(
+            <View style={{display:'flex',flexDirection:'row'}}>
+
+                <View>
                 <AwesomeButton height={50} width={0.25*(this.state.width)}  backgroundColor='#FF7F50' borderWidth={3} borderColor='#C39953'  onPress={()=>{this.onStudy(index)}}>
+                     <Text style={styles.text} >➡</Text>
+                     </AwesomeButton> 
+     
+                </View>
 
 
-              
-            <Text style={styles.text} >➡</Text>
-
-
-                </AwesomeButton> 
-
+                <View>
+                <AwesomeButton height={50} width={0.25*(this.state.width)}  backgroundColor='#FF7F50' borderWidth={3} borderColor='#C39953'  onPress={()=>{this.props.navigation.navigate('FlashCards',{name:value2})}}>
+                     <Text style={{fontSize:29}} >◫</Text>
+                     </AwesomeButton> 
+     
+                </View>
+          
           
             </View>
         )
@@ -160,15 +168,15 @@ export default class Study extends React.Component{
         
                 <Text style={{fontFamily:this.state.font,fontSize:35,color:'#FF7F50',textAlign:'center'}} >Select a Subject</Text>
 
-                <Table borderStyle={{borderWidth:0.9,borderColor:'#C39953'}} style={{}}>
+                <Table borderStyle={{borderWidth:0.9,borderColor:'#C39953'}} >
                     {this.state.Rows.map((value,index)=>
 
                     <TableWrapper key={index} style={styles2.row}>
                         {
                             value.map((value2,index2)=>
-                                <Cell key={index2} data={index2==1?button(index):value2}  textStyle={index2==1?styles2.text:{textAlign:'center',color:'white',fontFamily:this.state.font,fontSize:25}} 
+                                <Cell key={index2} data={index2==1?button(index,value2):value2}  textStyle={index2==1?styles2.text:{textAlign:'center',color:'white',fontFamily:this.state.font,fontSize:25}} 
                                 
-                                style={{width:"75%",backgroundColor:"#00CC99"}}
+                                style={{width:"50%",backgroundColor:"#00CC99"}}
                                 > </Cell>
 
                             )

@@ -17,8 +17,6 @@ import * as Font from 'expo-font';
 
 import { Table,Row,TableWrapper, Cell } from 'react-native-table-component';
 
-import { TextInput } from "react-native-gesture-handler";
-import { FlatList } from "react-native-gesture-handler";
 
 import DialogInput from "react-native-dialog-input";
 
@@ -31,14 +29,10 @@ export default class Subject extends React.Component{
         name:'',
         ButtonText:'Start Timer',
         startTime:0,
-        Duration:0,
         startfull:'  -',
         taskList:[],
        taskList2:[],
        inputDialog:false,
-       taskText:'',
-        checkbox:[],
-        taskArray:["Enter Task "],
         fontsLoaded:false,
         font:"normal",
         pauseBtnText:"Pause",
@@ -178,27 +172,9 @@ export default class Subject extends React.Component{
    
 
 
-    addToCheckbox=()=>{
-         this.state.checkbox.push(true);
-
-        
-    }
+ 
 
 
-
-
-
-    changeCheckbox=(index)=>{
-         Alert.alert(String(index))
-        
-        var value  = Boolean(this.state.checkbox[index]);
-       this.state.checkbox[index]=!value
-       
-
-        
-        
-       
-    }
 
 
 
@@ -487,11 +463,12 @@ export default class Subject extends React.Component{
 }
 
 const styles=StyleSheet.create({
-    task:{ color: '#fff',
-    width: '90%',
-    fontSize: 16},
+    task:{ 
+    color: '#fff', width: '90%',
+    fontSize: 16
+    },
     taskContainer:{
-       
+    
         borderRadius: 12,
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -517,12 +494,6 @@ const styles=StyleSheet.create({
         position:'absolute',
         top:400
     },
-    logo:{
-        fontWeight:"bold",
-        fontSize:50,
-        left:'35%',
-        color:"#fb5b5a"
-      },
     text:{
         position:'relative',
         height:330,
@@ -544,10 +515,8 @@ const styles=StyleSheet.create({
     btn1:{
         width:'100%'
     },
-    singleHead: { width: 200, height: 40, backgroundColor: '#c8e1ff' },
-    taskText:{
-        width:500
-    },
+    singleHead: { width: 200, height: 40, backgroundColor: '#c8e1ff' }
+    ,
     startButton:{
         width:"20%",
         position:'relative',
