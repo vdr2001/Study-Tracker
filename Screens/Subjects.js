@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import React from 'react';
 
-import { Dimensions, TextInput } from 'react-native';
+import { Dimensions} from 'react-native';
 
 import { Alert } from 'react-native';
 
@@ -10,7 +10,7 @@ import {StyleSheet,View,ScrollView} from 'react-native';
 
 import DialogInput from 'react-native-dialog-input';
 
-import { Text } from 'react-native-elements';
+import { Text } from 'react-native';
 
 import AwesomeButton from 'react-native-really-awesome-button';
 
@@ -37,8 +37,7 @@ class Subjects extends React.Component{
     state={
         Rows_data: [],
         visible:true,
-        
-        message:[],
+         message:[],
         fontsLoaded: false,
         font:"normal",
         width:Dimensions.get('window').width,
@@ -46,7 +45,25 @@ class Subjects extends React.Component{
     }
 
 
-  
+    setArray=async()=>{
+        var array =await AsyncStorage.getItem('studydata');
+        var arrayFlash= await AsyncStorage.getItem('flashcards')
+        var subjects =await AsyncStorage.getItem('subjects');
+        if (array==null){
+            AsyncStorage.setItem('studydata',JSON.stringify([]));
+        }
+
+        if (arrayFlash==null){
+            AsyncStorage.setItem('flashcards',JSON.stringify([]));
+        }
+       
+        if (subjects==null){
+            AsyncStorage.setItem('subjects',JSON.stringify([]))
+        }
+ 
+
+
+    }
 
 /**========================================================================
  **                           Load Subject Data
@@ -89,8 +106,17 @@ class Subjects extends React.Component{
 
 
         var Exists=false;
+        if (this.state.Rows_data.length==8){
+            Alert.alert("Limit Reached","You can only add a maximum of 8 subjects")
+        }
 
 
+        else if(subjectAdd.length>20){
+            Alert.alert("Too long","Subject name can only be a maximum of 20 characters")
+
+        }
+
+        else{
 //*  Checking if the input subject is already in array  
 
         for (var i = 0;i<this.state.Rows_data.length;i++){
@@ -164,7 +190,7 @@ class Subjects extends React.Component{
            
         }
         
-
+    }
     }
 
     //********************************************************************************* */
@@ -339,7 +365,7 @@ for(let j=0 ;j<studydata.length;j++){
    
 
     componentDidMount=()=>{
-      
+        this.setArray();
         this.LoadData();
         
     }
@@ -348,7 +374,8 @@ for(let j=0 ;j<studydata.length;j++){
     dialogView=()=>{
 if (this.state.inputDialog==true){
         return(
-<DialogInput isDialogVisible={true}
+<DialogInput isDialogVisible={true} 
+
             title={"Enter a name for your subject"}
             
             submitInput={ (inputText) => {
@@ -378,7 +405,12 @@ if (this.state.inputDialog==true){
   
     render(){
       
-   
+        if (this.state.fontsLoaded==false){
+            this.loadFonts()
+
+            
+        }
+        
 
         if (this.state.Rows_data.length==0){
             this.state.message=[
@@ -397,23 +429,36 @@ if (this.state.inputDialog==true){
 
            
               <View>
-                  <AwesomeButton height={50} width={0.25*(this.state.width)} backgroundColor={'#FF7F50'} onPress={()=>{this.RemoveAlert(index)}} style={{display:'flex'}}><Text>X</Text></AwesomeButton>
-                
+                  
+                  <View>
+                <AwesomeButton height={50} width={0.25*(this.state.width)}  backgroundColor='#FF7F50' borderWidth={3} borderColor='#C39953'  onPress={()=>{ this.props.navigation.navigate('SubjectPage',{name:this.state.Rows_data[index]})}}>
+                     <Text style={styles.text} >⏰</Text>
+                     </AwesomeButton> 
+     
+                </View>
+
+
+                <View>
+                <AwesomeButton height={50} width={0.25*(this.state.width)}  backgroundColor='#FF7F50' borderWidth={3} borderColor='#C39953'  onPress={()=>{this.props.navigation.navigate('FlashCards',{name:this.state.Rows_data[index]})}}>
+                     <Text style={{fontSize:29}} >📖</Text>
+                     </AwesomeButton> 
+     
+                </View>
+
+                <AwesomeButton height={50} width={0.25*(this.state.width)} backgroundColor={'#FF7F50'} onPress={()=>{this.RemoveAlert(index)}} style={{display:'flex'}}><Text>❌</Text></AwesomeButton>
               </View>
+              
            
           );
 
   
-        if (this.state.fontsLoaded==false){
-            this.loadFonts()
-        }
         
          
         
         return(
             
-            
-            <View >
+         <ScrollView> 
+            <View style={{marginTop:30}}>
             
 
             <this.dialogView></this.dialogView>
@@ -429,7 +474,27 @@ if (this.state.inputDialog==true){
 
 
                
-            <View style={{alignItems:'center'}}>   
+            <View style={{alignItems:'center',marginTop:30}}>   
+
+<View style={{flexDirection:'row'}}>
+        <AwesomeButton width={150} backgroundColor="#00CC99" borderWidth={3} borderColor='#C39953' onPress={()=>{this.props.navigation.navigate('Progress')}} style={{marginRight:10}}>
+
+             
+                <Text style={{  color: "#fff", textAlign:'center',fontFamily:this.state.font,fontSize:18}}>My Progress</Text>
+
+
+            </AwesomeButton> 
+
+            <AwesomeButton  width={150} backgroundColor="#00CC99" borderWidth={3} borderColor='#C39953'  onPress={()=>{this.props.navigation.navigate("Previousses")}} >
+
+              
+<Text style={{ color: "#fff", textAlign:'center',fontFamily:this.state.font,fontSize:18}}> Previous Sessions</Text>
+
+
+</AwesomeButton> 
+
+</View>
+
                 <AwesomeButton onPress={()=>{this.setState({inputDialog:true})}} borderWidth={3} borderColor='#C39953' backgroundColor="#00CC99" style={styles.buttonContainer} > 
                 
                 <Text style={{color: "#fff",
@@ -443,8 +508,7 @@ if (this.state.inputDialog==true){
 
 
 
-               <ScrollView style={{marginTop:30}}>
-
+           
                    
 
                 
@@ -488,9 +552,10 @@ if (this.state.inputDialog==true){
 
 
                 </Table>
-                </ScrollView>
+               
                 
             </View>
+            </ScrollView>  
         )
     
 }

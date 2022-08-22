@@ -27,8 +27,8 @@ export default class PreviousSes extends React.Component{
             var date = new Date(JSON.parse(times[i][1]))
 
             var fulldate= date.toLocaleDateString()
-            let time= new Date(date.getTime()).toLocaleTimeString()
-            array.push([times[i][0],fulldate,times[i][2]+" Minutes","Tasks"])
+            var subject = times[i][0].split(",")[0]
+            array.push([subject,fulldate,times[i][2]+" Minutes","Tasks"])
             tasks.push(times[i][3]);
         }
 
@@ -79,7 +79,7 @@ export default class PreviousSes extends React.Component{
    returnData=()=>{
 
     return(
-        <View>
+        <View style={{marginTop:30}}>
                 
         <Text style={{fontFamily:this.state.Family,fontSize:35,color:'#FF7F50',textAlign:'center',marginTop:40}} >Previous Sessions</Text>
           <Table borderStyle={{borderWidth:0.0,borderColor:'#C39953'}} style={{marginTop:60}}  >

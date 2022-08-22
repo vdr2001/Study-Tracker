@@ -24,7 +24,7 @@ export default class ViewTask extends React.Component{
             Yellowtail: require('../../assets/fonts/Yellowtail-Regular.ttf')
         })
         
-        this.setState({fontsLoaded:true,Family:'Teko',fontHeader:"Yellowtail"})
+        this.setState({fontsLoaded:true,Family:'Teko',fontHeader:"Teko"})
     }
 
 
@@ -36,7 +36,7 @@ export default class ViewTask extends React.Component{
         this.state.Rows_data= this.props.route.params.taskList
         return(
             <View style={{marginTop:70}}>
-                <Text style={{color:'white',fontSize:35,textAlign:'center',fontFamily:this.state.fontHeader,color:'#FF7F50'}}>Your tasks</Text>
+                <Text style={{color:'white',marginBottom:20,fontSize:35,textAlign:'center',fontFamily:this.state.fontHeader,color:'#FF7F50'}}>Your tasks</Text>
                 <View style={{
                     backgroundColor:'#00CC99'
                 }}>

@@ -1,12 +1,13 @@
 {
   "expo": {
-    "name": "MyProject",
-    "slug": "MyProject",
+    "name": "Study Tracker",
+    "slug": "StudyTracker",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/Logo.png",
+    "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/Favicon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -20,13 +21,16 @@
       "supportsTablet": true
     },
     "android": {
+      "versionCode": 3,
+      "permissions":[],
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/Logo.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.vdr2001.StudyTracker"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/Favicon.png"
     }
   }
 }

@@ -2,15 +2,16 @@ import React from "react";
 import { View,Text, Alert } from "react-native";
 
 import { Dimensions } from "react-native";
-import { Card, Paragraph, TextInput } from "react-native-paper";
-import { StyleSheet,Button,Picker } from "react-native";
+import { Card, Paragraph,Title } from "react-native-paper";
+import { StyleSheet } from "react-native";
 import AwesomeButton from "react-native-really-awesome-button";
-import DropDownPicker from "react-native-dropdown-picker";
+
 import * as Font from 'expo-font';
-import { useState } from "react";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import { TouchableOpacity } from "react-native-gesture-handler";
+
 export default class FlashCards extends React.Component{
 
     
@@ -27,7 +28,8 @@ export default class FlashCards extends React.Component{
           subName:"",
           indexofArray:0,
           font:"normal",
-          fontsLoaded:false
+          fontsLoaded:false,
+          swipeMessage:""
         };
 
        
@@ -51,13 +53,12 @@ export default class FlashCards extends React.Component{
         var flashDisplay=[]
         
 
-        if (this.state.currval!=this.state.value){
-            this.state.index=0
-        }
-        
+ 
         
         for (let i =0; i<flashcards.length;i++){
-            if (flashcards[i][0]==this.state.value){
+            if (flashcards[i][0]==this.props.route.params.name[0]){
+              
+            
                 index=i
                
             }
@@ -73,6 +74,7 @@ export default class FlashCards extends React.Component{
         this.state.flashArray=arraySect
         this.state.length= flashDisplay.length
         this.state.subName=this.state.value;
+        this.state.swipeMessage="Swipe to view next card"
         this.state.value="Select Subject"
         this.state.indexofArray=index
         this.setState({})
@@ -101,7 +103,13 @@ export default class FlashCards extends React.Component{
     AsyncStorage.setItem('flashcards',JSON.stringify(flashcards)
     )
     
-    this.setState({value:flashcards[this.state.indexofArray][0]})
+    var newIndex =0 
+
+    if (this.state.index>0){
+      newIndex=this.state.index-1;
+    
+    }
+    this.setState({value:flashcards[this.state.indexofArray][0],index:newIndex})
     this.loadFlashCards()
     }
 
@@ -125,17 +133,20 @@ export default class FlashCards extends React.Component{
         
       if (variable==true){ //show the definition side
             return(
-         <View>      
+         <View>
+        <Text style={{textAlign:'center',marginTop:30,color:'#00CC99'}}>{this.state.swipeMessage}</Text>
         <TouchableOpacity onPress={()=>{this.setState({side:!this.state.side})}}>     
           <Card  style={styles.Card}> 
-          <Card.Title style={{left:'30%'}} title={String(this.state.flashArray[this.state.index]).split(',')[0]}></Card.Title>
+          <Title style={{alignSelf:'center',fontFamily:'Teko',fontSize:25,marginTop:20,color:'#FF7F50'}}> {String(this.state.flashArray[this.state.index]).split(',')[0]}</Title>
           <Card.Content style={styles.cardContent}>
-              <Paragraph>{String(this.state.flashArray[this.state.index]).split(',')[1]}</Paragraph>
+              <Paragraph style={{fontSize:18,color:'#58d5c9',fontFamily:'Teko'}}>{String(this.state.flashArray[this.state.index][0][1])}</Paragraph>
              
           </Card.Content>
           
       </Card>
       </TouchableOpacity>  
+
+      <AwesomeButton backgroundColor="#00CC99" width={Dimensions.get('window').width} onPress={()=>{this.deleteCard()}} ><Text>🗑️</Text></AwesomeButton>
       
       </View>  
 
@@ -145,14 +156,16 @@ export default class FlashCards extends React.Component{
             return(
 
               
-         <View style={{bottom:30}}>    
+         <View style={{}}>    
           
-        
+          <Text style={{textAlign:'center',marginTop:30,color:'#00CC99'}}>{this.state.swipeMessage}</Text>
      
          <TouchableOpacity onPress={()=>{this.setState({side:!this.state.side})}}>      
-            <Card  style={styles.Card}> 
-            <Card.Title style={{left:'30%',top:'25%'}} title={String(this.state.flashArray[this.state.index]).split(',')[0]}></Card.Title>
-         
+            <Card style={styles.Card}> 
+
+              
+            <Title style={{alignSelf:'center',fontFamily:'Teko',marginTop:Dimensions.get('window').height/5,color:'#FF7F50'}} >{String(this.state.flashArray[this.state.index][0][0])}</Title>
+            
         </Card>
         </TouchableOpacity> 
         <AwesomeButton backgroundColor="#00CC99" width={Dimensions.get('window').width} onPress={()=>{this.deleteCard()}} ><Text>🗑️</Text></AwesomeButton>
@@ -166,7 +179,7 @@ export default class FlashCards extends React.Component{
 
     else{ //if there are no flashcards for the subjects
         if(this.state.length==0){
-           return( <View><Text style={{fontFamily:this.state.font,fontSize:29,textAlign:'center',color:'#FF7F50',top:70}}>(No Flashcards for this subject)</Text></View>)
+           return( <View><Text style={{fontFamily:this.state.font,fontSize:29,textAlign:'center',color:'#FF7F50',top:70}}>No Flashcards for this subject</Text></View>)
         }
         else{
         return(<View><Text style={{fontFamily:this.state.font,fontSize:29,textAlign:'center',color:'#FF7F50',top:70}}>Please select a subject</Text></View>)
@@ -222,9 +235,7 @@ export default class FlashCards extends React.Component{
     const {SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT} = swipeDirections;
     this.setState({gestureName: gestureName});
     switch (gestureName) {
-      case SWIPE_UP:
-        alert("up");
-        break;
+    
       case SWIPE_DOWN:
         this.setState({backgroundColor: 'green'});
         break;
@@ -238,6 +249,7 @@ export default class FlashCards extends React.Component{
   }
  
   loadFonts=async()=>{
+
     await Font.loadAsync({
         Daniel:require('../assets/fonts/Daniel.ttf'),
         Pacifico:require('../assets/fonts/Pacifico-Regular.ttf'),
@@ -252,8 +264,9 @@ export default class FlashCards extends React.Component{
   }
 
     render(){
+      
       this.state.value = this.props.route.params.name;
-      this.state.value= this.props.route.params.name;
+    
       if (this.state.fontsLoaded==false){
         this.loadFonts()
       
@@ -268,10 +281,12 @@ export default class FlashCards extends React.Component{
       
         return(
 
-        <View>
+        <View style={{marginTop:50}}>
              <View style={styles.addButton}>
+
+              
            
-          <AwesomeButton  onPress={()=>{this.props.navigation.navigate("AddFlash",{value:this.state.value})}} borderWidth={3} borderColor='#C39953' backgroundColor={'#00CC99'} width={(Dimensions.get('window').width)/2}>
+          <AwesomeButton  onPress={()=>{this.props.navigation.navigate("AddFlash",{value:this.props.route.params.name})}} borderWidth={3} borderColor='#C39953' backgroundColor={'#00CC99'} width={(Dimensions.get('window').width)/2}>
             
             
             
@@ -284,6 +299,7 @@ export default class FlashCards extends React.Component{
            
               <GestureRecognizer  config={config} onSwipe={(direction,state)=>{this.onSwipe(direction,state)}}>
               <Text style={{fontFamily:this.state.font,fontSize:29,textAlign:'center',top:20,color:'#FF7F50'}}>{this.state.subName}</Text>
+       
               <this.card></this.card>
               </GestureRecognizer>
             
@@ -300,13 +316,17 @@ const styles = StyleSheet.create({
         position:"relative",
         top:60,
         height:450,
-        borderWidth:0,
-        borderColor:'#C39953'
+        borderWidth:3,
+        borderColor:'#60efbc',
+        width:Dimensions.get('screen').width
+        
 
     }
     , 
     cardContent:{
-        top:50
+      alignItems:'center',
+      marginTop:110
+
     },
     addButton:{
        

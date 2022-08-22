@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React from "react";
 import {
+  Alert,
     Text,
     View} from 'react-native';
  
@@ -57,13 +58,17 @@ export default class Progress extends React.Component{
     
       var subjects = JSON.parse(await AsyncStorage.getItem('subjects'));
   
-   
+      var sortedArray =[]
 
   
       this.state.studyTimes=data;
 
-      this.state.subjects=subjects
       
+
+      for (i=0;i<subjects.length;i++){
+        sortedArray.push(subjects[i][0]);
+      }
+      this.state.subjects=sortedArray
       this.calculateData()
 
     }
@@ -71,7 +76,7 @@ export default class Progress extends React.Component{
     sevenDays=async()=>{
       
         var data = JSON.parse( await AsyncStorage.getItem("studydata"))
-        
+        var sortedArray=[];
        
 
         for (let i=0 ; i<data.length; i++){
@@ -96,7 +101,14 @@ export default class Progress extends React.Component{
        
         this.state.studyTimes=data;
 
-        this.state.subjects=subjects
+       
+      for (i=0;i<subjects.length;i++){
+        sortedArray.push(subjects[i][0]);
+      }
+      this.state.subjects=sortedArray
+
+
+
       
         this.calculateData()
     }
@@ -118,7 +130,7 @@ export default class Progress extends React.Component{
      var sevenToTwelve= 0 
      var oneToFive=0
       var studyTimes =JSON.parse(await AsyncStorage.getItem("studydata"))
-     
+
       for (let i=0; i<studyTimes.length;i++){
 
      
@@ -147,7 +159,7 @@ export default class Progress extends React.Component{
 
       }
 
-
+     
       this.setState({timePeriods:[sixToEleven,twelveToSeven,sevenToTwelve,oneToFive]})
 
     }
@@ -170,15 +182,15 @@ export default class Progress extends React.Component{
 
           for (let j=0; j<studyTimes2.length;j++){
 
-              if (subjects2[i][0]==studyTimes2[j][0]){
+              if (subjects2[i]==studyTimes2[j][0]){
                  
                   sum=sum+studyTimes2[j][2]; //Add the duration of the specific study session to the sum of the entire subject
                   
               }
           }
 
-          totals.push([sum]); //add the time for the subject into the array 
-      
+          totals.push(sum); //add the time for the subject into the array 
+            
 
       }
      
@@ -213,7 +225,9 @@ componentDidMount(){
         
       
         return(
-            <View style={{flex:4.8,paddingBottom:0}}>
+          
+      <ScrollView style={{}}>  
+          
 
 
               <View style={{justifyContent:'center',marginTop:30,flexDirection:'row'}}>
@@ -239,15 +253,14 @@ componentDidMount(){
       
                
                 
-
-      <ScrollView style={{}}>   
+ 
       <Text style={{fontFamily:'Teko',fontSize:35,color:'#FF7F50',textAlign:'center'}}>Total study times(minutes)</Text>
-                <BarChart
+      <BarChart
   style={{
     marginVertical: 9,
-    borderRadius: 2,
-    paddingLeft:2,
-    marginBottom:30
+    borderRadius: 10,
+    marginBottom:30,
+    alignSelf:'center'
   }}
   data={{
     labels: this.state.subjects,
@@ -257,11 +270,12 @@ componentDidMount(){
       }
     ]
   }}
-  width={Dimensions.get('window').width}
-  height={320}
+  width={Dimensions.get('window').width-20}
+  height={500}
   yAxisLabel=""
-  yAxisSuffix=" Min"
+  yAxisSuffix=""
   
+  showValuesOnTopOfBars={true}
   chartConfig={{
     backgroundColor: "#00CC99",
     backgroundGradientFrom: "#00CC99",
@@ -270,15 +284,17 @@ componentDidMount(){
     color: (opacity = 1) => `rgba(14, 15, 15, ${opacity})`,
     labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
     style: {
-      borderRadius: 20
+      borderRadius: 20,
+      margin:0
     },
     propsForDots: {
       r: "6",
-      strokeWidth: "2",
-      stroke: "#ffa726"
+      strokeWidth: "",
+      stroke: "#ffa726",
+    
     }
   }}
-  verticalLabelRotation={30}
+  verticalLabelRotation={90}
 />
 
 
@@ -291,14 +307,14 @@ componentDidMount(){
         }
       ]
     }}
-    width={Dimensions.get("window").width} // from react-native
-    height={280}
+    width={Dimensions.get("window").width-20} // from react-native
+    height={400}
   
     yAxisInterval={1} // optional, defaults to 1
-    
+
     chartConfig={{
       backgroundColor: "#e26a00",
-      backgroundGradientFrom: "#fb8c00",
+      backgroundGradientFrom: "#58d5c9",
       backgroundGradientTo: "#ffa726",
       decimalPlaces: 2, // optional, defaults to 2dp
       color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
@@ -315,37 +331,39 @@ componentDidMount(){
     bezier
     style={{
       marginVertical: 8,
-      borderRadius: 16
+      borderRadius: 16,
+      alignSelf:'center'
     }}
+    verticalLabelRotation={30}
   />
 
 <Text style={{fontFamily:'Teko',fontSize:35,color:'#FF7F50',textAlign:'center',marginTop:110}}>Frequent study times(Minutes)</Text>
 <PieChart
-
+  
   data={ [
     {
-      name: "6 am to 11 am",
+      name: "(6 am to 11 am)",
       population: this.state.timePeriods[0],
       color: "rgba(131, 167, 234, 1)",
       legendFontColor: "#7F7F7F",
       legendFontSize: 15
     },
     {
-      name: "12 pm to 7 pm",
+      name: "(12 pm to 7 pm)",
       population: this.state.timePeriods[1],
-      color: "#F00",
+      color: "#60efbc",
       legendFontColor: "#7F7F7F",
       legendFontSize: 15
     },
     {
-      name: "7 pm to 12 am",
+      name: "(7 pm to 12 am)",
       population: this.state.timePeriods[2],
-      color: "yellow",
+      color: "#58d5c9",
       legendFontColor: "#7F7F7F",
       legendFontSize: 15
     },
     {
-      name: "1 am to 5 am ",
+      name: "(1 am to 5 am) ",
       population: this.state.timePeriods[3],
       color: "#ffffff",
       legendFontColor: "#7F7F7F",
@@ -354,7 +372,9 @@ componentDidMount(){
   ]}
   width={Dimensions.get("window").width}
   height={260}
+  
   chartConfig={{
+  
     backgroundColor: "#e26a00",
     backgroundGradientFrom: "#fb8c00",
     backgroundGradientTo: "#ffa726",
@@ -362,17 +382,18 @@ componentDidMount(){
     color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
     labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
     style: {
-      borderRadius: 16
+      borderRadius: 20
     },
     propsForDots: {
       r: "6",
       strokeWidth: "2",
       stroke: "#ffa726"
     }}}
+    
   accessor={"population"}
   backgroundColor={"transparent"}
   
-  paddingLeft={"12"}
+  paddingLeft={"8"}
 
   
   center={[10, 20]}
@@ -380,10 +401,11 @@ componentDidMount(){
   absolute
 />
 
+  
 
 </ScrollView>     
 
-            </View>
+          
         )
     }
 
@@ -391,7 +413,9 @@ componentDidMount(){
     else{
       this.loadFonts()
       return(
-        <View></View>
+        <View>
+   
+        </View>
       )
     }
 
